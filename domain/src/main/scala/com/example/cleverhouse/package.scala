@@ -20,10 +20,8 @@ package object data {
   }
 
   object SensorEvent {
-    final case class SensorLight(id: EventId, created: Timestamp) extends SensorEvent
+    import io.circe.generic.auto._, io.circe.syntax._
 
-
-    implicit val eventEncoder: Encoder[SensorEvent] = deriveEncoder
-    implicit val eventDecoder: Decoder[SensorEvent] = deriveDecoder
+    case class SensorLight(id: EventId, created: Timestamp) extends SensorEvent
   }
 }
