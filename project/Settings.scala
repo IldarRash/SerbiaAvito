@@ -26,7 +26,7 @@ object Settings {
     )
 
   val serviceDependencies = List(cats, catsEffect, fs2Kafka)
-  val routeDependencies = http4s
   val serverDependencies = List(logback, log4cats, pureConfig)
   val domainDependencies = circe
+  val routeDependencies = http4s
 }
