@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+
+  db-dev:
+    image: postgres:latest
+    restart: always
+    ports:
+      - 5432:5432
+
+  migrate-dev:
+    image: flyway/flyway
+    command: -url=jdbc:postgresql://db-dev:5432/postgres -user=postgres -connectRetries=60 migrate
+    volumes:
+      - ./src/main/resources/db/migration:/flyway/sql
+    depends_on:
+      - db-dev
