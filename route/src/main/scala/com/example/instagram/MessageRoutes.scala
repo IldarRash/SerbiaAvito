@@ -3,8 +3,8 @@ package com.example.instagram
 import cats.Monad
 import cats.effect.Async
 import cats.implicits._
-import com.example.instagram.Message.ToMessage
-import io.circe.Decoder
+import com.example.instagram.Message.{FromMessage, ToMessage}
+import io.circe.{Decoder, Encoder}
 import io.circe.generic.codec.DerivedAsObjectCodec.deriveCodec
 import org.http4s.circe.CirceEntityCodec.circeEntityEncoder
 import org.http4s.circe.{JsonDecoder, toMessageSynax}
@@ -18,8 +18,8 @@ class MessageRoutes [F[_]: Monad : Async : JsonDecoder] extends Http4sDsl[F] {
 
   val routes: HttpRoutes[F] = HttpRoutes.of[F] {
     case req @ POST -> Root / "message" =>
-      val sensor = (s: Message)  => hiSendor(s)
-      handleReq(req)(sensor)
+      val mess = (from: FromMessage)  => refactor(from)
+      handleReq(req)(mess)
 
     case GET -> Root / "message" =>
       Ok(ToMessage(EventId(UUID.randomUUID()), MessageId(UUID.randomUUID()), MessageBody("asdasd"), Timestamp(Instant.now())))
@@ -27,12 +27,14 @@ class MessageRoutes [F[_]: Monad : Async : JsonDecoder] extends Http4sDsl[F] {
 
 
 
-  def handleReq[T: Decoder](req: Request[F])(mess: T => F[String]): F[Response[F]] =
+  def handleReq[T1: Decoder, T2: Encoder](req: Request[F])(mess: T1 => T2): F[Response[F]] =
     for {
-      msg <- req.asJsonDecode[T]
-      ans  <- mess(msg)
-      res  <-  Ok(ans)
+      msg <- req.asJsonDecode[T1]
+        .map(mess)
+      res  <-  Ok(msg)
     } yield res
 
-  def hiSendor(s: Message) : F[String] = Monad[F].pure("Hi" + s.id)
+  def refactor(msg: FromMessage) : ToMessage =
+    ToMessage(msg.id, msg.messageId, msg.body, Timestamp(Instant.now()))
+
 }

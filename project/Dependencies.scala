@@ -38,6 +38,8 @@ object Dependencies {
   val kindProjector = "org.typelevel" %% "kind-projector" % Version.kindProjector cross CrossVersion.full
 
   val pureConfig = "com.github.pureconfig" %% "pureconfig" % Version.pureConfigVersion
+  val logback = "ch.qos.logback" % "logback-classic" % Version.logback
+  val log4cats = "io.chrisdavenport" %% "log4cats-core" % Version.log4cats
 }
 
 object Version {
@@ -55,4 +57,6 @@ object Version {
   val neutron = "0.0.4"
   val contextApplied = "0.1.4"
   val pureConfigVersion = "0.12.3"
+  val logback = "1.2.3"
+  val log4cats = "1.1.1"
 }

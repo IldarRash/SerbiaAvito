@@ -37,6 +37,6 @@ object Settings {
 
   val serviceDependencies = List(cats, catsEffect, neutronCore, slf4j, zioCats) ++ zioTest
   val routeDependencies = http4s
-  val serverDependencies = List(neutronCirce, ciris, pureConfig) ++ zio
+  val serverDependencies = List(neutronCirce, ciris, pureConfig, logback, log4cats) ++ zio
   val domainDependencies = List(newtype) ++ circe
 }

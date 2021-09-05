@@ -9,7 +9,7 @@ import { AppService } from './app.service';
 })
 export class AppComponent {
   title: string | undefined;
-  postRequestResponse: string | undefined;
+  postRequestResponse: Array<string> = [];
 
   constructor(private appService: AppService) {
     this.appService.getWelcomeMessage().subscribe((data: any) => {
@@ -24,7 +24,7 @@ export class AppComponent {
   public postData(): void {
     this.appService.sendData().subscribe((data: any) => {
       console.log(data)
-      this.postRequestResponse = data;
+      this.postRequestResponse.push(JSON.stringify(data));
     });
   }
 }

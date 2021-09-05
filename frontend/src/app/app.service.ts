@@ -30,6 +30,11 @@ export class AppService {
    * Makes a http post request to send some data to backend & get response.
    */
   public sendData(): Observable<any> {
-    return this.http.post(this.dataPostTestUrl, {});
+    return this.http.post(this.dataPostTestUrl, {
+      "id": "8b5c8ee9-01d4-480f-aa93-3a9c1a8bc1ab",
+      "messageId": "e6a03080-060e-4d13-9f2d-d143c31d64e2",
+      "body": "asdasd",
+      "created": "2021-09-05T16:02:55.472482Z"
+    });
   }
 }
