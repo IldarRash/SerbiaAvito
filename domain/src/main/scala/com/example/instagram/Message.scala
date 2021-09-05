@@ -9,11 +9,12 @@ sealed trait Message {
   def messageId: MessageId
   def created: Timestamp
   def body: MessageBody
+  def from: Boolean
 }
 
 object Message {
-  final case class FromMessage(id: EventId, messageId: MessageId, body: MessageBody, created: Timestamp) extends Message
-  final case class ToMessage(id: EventId, messageId: MessageId,  body: MessageBody, created: Timestamp)  extends Message
+  final case class FromMessage(id: EventId, messageId: MessageId, body: MessageBody, created: Timestamp, from: Boolean) extends Message
+  final case class ToMessage(id: EventId, messageId: MessageId,  body: MessageBody, created: Timestamp, from: Boolean)  extends Message
 
   implicit val eventEncoder: Encoder[Message] = deriveEncoder
   implicit val eventDecoder: Decoder[Message] = deriveDecoder

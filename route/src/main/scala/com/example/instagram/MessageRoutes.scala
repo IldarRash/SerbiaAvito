@@ -22,7 +22,7 @@ class MessageRoutes [F[_]: Monad : Async : JsonDecoder] extends Http4sDsl[F] {
       handleReq(req)(mess)
 
     case GET -> Root / "message" =>
-      Ok(ToMessage(EventId(UUID.randomUUID()), MessageId(UUID.randomUUID()), MessageBody("asdasd"), Timestamp(Instant.now())))
+      Ok(ToMessage(EventId(UUID.randomUUID()), MessageId(UUID.randomUUID()), MessageBody("asdasd"), Timestamp(Instant.now()), false))
   }
 
 
@@ -35,6 +35,6 @@ class MessageRoutes [F[_]: Monad : Async : JsonDecoder] extends Http4sDsl[F] {
     } yield res
 
   def refactor(msg: FromMessage) : ToMessage =
-    ToMessage(msg.id, msg.messageId, msg.body, Timestamp(Instant.now()))
+    ToMessage(msg.id, msg.messageId, msg.body, Timestamp(Instant.now()), false)
 
 }

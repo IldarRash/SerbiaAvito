@@ -32,6 +32,14 @@ object Dependencies {
   val neutronCore = "com.chatroulette" %% "neutron-core" % Version.neutron
   val neutronCirce = "com.chatroulette" %% "neutron-circe" % Version.neutron
 
+  val doobieCore = "org.tpolecat" %% "doobie-core" % Version.doobie
+  // And add any of these as needed
+
+  val doobiePostgres = "org.tpolecat" %% "doobie-postgres" % Version.doobie
+
+  val doobieHikary = "org.tpolecat" %% "doobie-hikari" % Version.doobie
+  val doobieQuill = "org.tpolecat" %% "doobie-quill" % Version.doobie
+
   val ciris = "is.cir" %% "ciris" % Version.ciris
 
   val contextApplied = "org.augustjune" %% "context-applied" % Version.contextApplied
@@ -43,6 +51,7 @@ object Dependencies {
 }
 
 object Version {
+
   val zio = "1.0.11"
   val cats = "2.6.1"
   val catsEffect = "2.5.3"
@@ -55,6 +64,8 @@ object Version {
   val circe = "0.14.1"
   val newtype = "0.4.4"
   val neutron = "0.0.4"
+  val doobie = "1.0.0-RC1"
+  val postgres = "42.1.4"
   val contextApplied = "0.1.4"
   val pureConfigVersion = "0.12.3"
   val logback = "1.2.3"
