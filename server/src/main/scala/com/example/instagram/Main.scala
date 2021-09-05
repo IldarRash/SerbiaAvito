@@ -1,13 +1,12 @@
-package com.example.cleverhouse
+package com.example.instagram
 
 import cats.effect.{ContextShift, ExitCode, IO, IOApp, Timer}
-import com.example.cleverhouse.config.AppConfig
+import com.example.instagram.config.AppConfig
 import org.http4s.HttpApp
 import pureconfig.ConfigSource
 import pureconfig.generic.auto._
 
 import scala.concurrent.ExecutionContext
-import scala.concurrent.ExecutionContext.global
 
 object Main extends IOApp {
   type Init[T] = IO[T]

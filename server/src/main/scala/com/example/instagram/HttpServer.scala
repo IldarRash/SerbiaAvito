@@ -1,8 +1,8 @@
-package com.example.cleverhouse
+package com.example.instagram
 
 import cats.effect.{ConcurrentEffect, Sync, Timer}
-import com.example.cleverhouse.Main.Routes
-import com.example.cleverhouse.config.AppConfig
+import Main.Routes
+import com.example.instagram.config.AppConfig
 import org.http4s.server.blaze.BlazeServerBuilder
 
 import scala.concurrent.ExecutionContext
