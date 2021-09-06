@@ -5,11 +5,12 @@ import cats.effect.Async
 import cats.implicits._
 import com.example.instagram.Message.InstagramMessage
 import com.example.instagram.services.MessageService
-import io.circe.{Decoder, Encoder}
 import io.circe.generic.codec.DerivedAsObjectCodec.deriveCodec
+import io.circe.syntax.EncoderOps
 import org.http4s.circe.CirceEntityCodec.circeEntityEncoder
 import org.http4s.circe.{JsonDecoder, toMessageSynax}
 import org.http4s.dsl.Http4sDsl
+import io.circe.syntax._
 import org.http4s.{HttpRoutes, Request, Response}
 
 import java.time.Instant
@@ -23,7 +24,9 @@ class MessageRoutes [F[_]: Monad : Async : JsonDecoder](messageService: MessageS
       handleReq(req)(mess)
 
     case GET -> Root / "message" =>
-      Ok(InstagramMessage(UUID.randomUUID(), UUID.randomUUID(), "asdasd", Instant.now(), false))
+      for {
+        json <- Ok(messageService.all.map(_.asJson))
+      } yield json
   }
 
   def handleReq(req: Request[F])(mess: InstagramMessage => InstagramMessage): F[Response[F]] =
@@ -34,7 +37,7 @@ class MessageRoutes [F[_]: Monad : Async : JsonDecoder](messageService: MessageS
     } yield res
 
   def refactor(msg: InstagramMessage) : InstagramMessage =
-    InstagramMessage(msg.id, msg.eventId, msg.body, Instant.now(), true)
+    InstagramMessage(msg.id, msg.eventId, msg.body, true, Instant.now())
 
 }
 

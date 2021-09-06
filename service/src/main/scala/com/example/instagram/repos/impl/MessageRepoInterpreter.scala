@@ -1,46 +1,35 @@
 package com.example.instagram.repos.impl
 
-import cats.data.OptionT
 import cats.effect.Async
 import com.example.instagram.Message.InstagramMessage
-import com.example.instagram.dbUtil.{Decoders, Encoders, Schema}
-import com.example.instagram.repos.MessageRepo
-import com.typesafe.scalalogging.{LazyLogging, Logger}
+import com.example.instagram.repos.{Mapping, MessageRepo}
 import doobie.implicits._
-import doobie.quill.DoobieContext.Postgres
 import doobie.util.transactor.Transactor
-import io.getquill.SnakeCase
-
+import doobie.postgres._
+import doobie.postgres.implicits._
 import java.util.UUID
 
 
-class MessageRepoInterpreter [F[_]: Async](
-         xa: Transactor[F],
-         override val ctx: Postgres[SnakeCase] with Decoders with Encoders
-            ) extends MessageRepo[F] with Schema {
-  import ctx._
+class MessageRepoInterpreter [F[_]: Async](xa: Transactor[F]) extends MessageRepo[F] with Mapping {
 
-  override def addMessage(message: InstagramMessage): F[UUID] =run(quote {
-    query[InstagramMessage].insert(lift(message)).returning(_.id)
-  }).transact(xa)
+  override def addMessage(message: InstagramMessage): F[Int] =
+      MessageRepoInterpreter
+        .addMessage(message)
+        .run
+        .transact(xa)
 
-  override def all: F[List[InstagramMessage]] = {
-    for {
-      list <- run(
-        query[InstagramMessage]
-      )
-    } yield list
-  }.transact(xa)
+  override def all: fs2.Stream[F, InstagramMessage] =
+      MessageRepoInterpreter
+        .all
+        .stream
+        .transact(xa)
 
 
-  override def findIsFrom(isFrom: Boolean): F[List[InstagramMessage]] = {
-    for {
-      list <- run(
-        query[InstagramMessage]
-          .filter(_.isFrom == lift(isFrom))
-      )
-    } yield list
-  }.transact(xa)
+  override def findIsFrom(isFrom: Boolean): fs2.Stream[F, InstagramMessage] =
+      MessageRepoInterpreter
+        .findIsFrom(isFrom)
+        .stream
+        .transact(xa)
 
 /*  override def byId(id: UUID): F[Option[InstagramMessage]]=
     run(query[InstagramMessage].filter(_.id == lift(id)).take(1)).transact(xa)*/
@@ -48,7 +37,46 @@ class MessageRepoInterpreter [F[_]: Async](
 
 
 object MessageRepoInterpreter {
-  def apply[F[_]: Async](xa: Transactor[F], ctx: Postgres[SnakeCase] with Decoders with Encoders
+  def apply[F[_]: Async](xa: Transactor[F]
                                ): MessageRepoInterpreter[F] =
-    new MessageRepoInterpreter[F](xa, ctx)
+    new MessageRepoInterpreter[F](xa)
+
+
+  def addMessage(message: InstagramMessage): doobie.Update0 =
+    sql"""
+         |INSERT INTO message (
+         |  message_id,
+         |  event_id,
+         |  body,
+         |  isFrom,
+         |  created
+         |)
+         |VALUES (
+         |  ${message.id},
+         |  ${message.eventId},
+         |  ${message.body},
+         |  ${message.isFrom},
+         |  ${message.created}
+         |)
+     """.stripMargin
+      .update
+
+  def all: doobie.Query0[InstagramMessage] =
+    sql"""
+         |SELECT * FROM message
+       """.stripMargin
+      .query[InstagramMessage]
+
+
+  def findIsFrom(isFrom: Boolean): doobie.Query0[InstagramMessage] =
+    sql"""
+         |SELECT * FROM message m
+         |WHERE m.isFrom = ${isFrom}
+       """.stripMargin
+      .query[InstagramMessage]
+
+
+
+
+
 }

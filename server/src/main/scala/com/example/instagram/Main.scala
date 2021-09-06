@@ -19,12 +19,13 @@ object Main extends zio.App {
     val ec = platform.executor.asEC
     Resources
       .make[F]
-      .use { case Resources(config, xa) =>
+      .use { case Resources(serverConfig, databaseConfig, xa) =>
+        val flyway = Database.initializeDb[F](databaseConfig)
 
         val httpServer = Task.concurrentEffectWith { implicit CE =>
           val routes = new Routes[F](xa)
           BlazeServerBuilder[F](ec)
-            .bindHttp(config.apiPort, config.apiHost)
+            .bindHttp(serverConfig.apiPort, serverConfig.apiHost)
             .withHttpApp(routes.make)
             .serve
             .compile
@@ -32,7 +33,7 @@ object Main extends zio.App {
         }
 
         Logger[F].info("Started server") *>
-          httpServer
+          httpServer.zipPar(flyway)
           .unit
       }
       .exitCode

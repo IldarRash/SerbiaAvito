@@ -8,9 +8,9 @@ import java.util.UUID
 
 
 trait MessageRepo[F[_]] {
-  def addMessage(message: InstagramMessage): F[UUID]
-  def all: F[List[InstagramMessage]]
-  def findIsFrom(isFrom: Boolean): F[List[InstagramMessage]]
+  def addMessage(message: InstagramMessage): F[Int]
+  def all: fs2.Stream[F, InstagramMessage]
+  def findIsFrom(isFrom: Boolean): fs2.Stream[F, InstagramMessage]
   /*def byId(id: UUID): OptionT[F, InstagramMessage]*/
 }
 

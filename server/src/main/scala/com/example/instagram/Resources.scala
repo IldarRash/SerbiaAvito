@@ -12,7 +12,7 @@ import pureconfig.ConfigSource
 import pureconfig.generic.auto._
 
 
-final case class Resources[F[_]](config: ServerConfig, xa: HikariTransactor[F])
+final case class Resources[F[_]](config: ServerConfig,databaseConfig: DatabaseConfig, xa: HikariTransactor[F])
 
 object Resources {
   def make[
@@ -24,6 +24,5 @@ object Resources {
       connEc <- ExecutionContexts.fixedThreadPool[F](dataBaseConfig.poolSize)
       blocker <- Blocker[F]
       xa <- Database.dbTransactor(dataBaseConfig, connEc, blocker)
-
-    } yield Resources(serverConfig, xa)
+    } yield Resources(serverConfig, dataBaseConfig, xa)
 }

@@ -11,13 +11,13 @@ import java.util.UUID
 sealed trait Message {
   def id: UUID
   def eventId: UUID
-  def created: Instant
   def body: String
   def isFrom: Boolean
+  def created: Instant
 }
 
 object Message {
-  final case class InstagramMessage(id: UUID, eventId: UUID, body: String, created: Instant, isFrom: Boolean) extends Message
+  final case class InstagramMessage(id: UUID, eventId: UUID, body: String, isFrom: Boolean, created: Instant) extends Message
 
 
   implicit val messageToEncoder: Encoder[Message] = deriveEncoder

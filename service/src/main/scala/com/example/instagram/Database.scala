@@ -5,8 +5,6 @@ import cats.effect.{Async, Blocker, ContextShift, Resource, Sync}
 import cats.syntax.functor._
 import com.example.instagram.config.DatabaseConfig
 import doobie.hikari.HikariTransactor
-import doobie.quill.DoobieContext
-import io.getquill.SnakeCase
 import org.flywaydb.core.Flyway
 
 import scala.concurrent.ExecutionContext
@@ -29,8 +27,4 @@ object Database {
           .load()
       fw.migrate()
     }.as(())
-}
-
-package object database {
-  lazy val ctx = new DoobieContext.Postgres(SnakeCase)
 }
