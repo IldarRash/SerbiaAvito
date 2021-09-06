@@ -1,21 +1,28 @@
 package com.example.instagram
 
-import com.example.instagram.{EventId, MessageBody, MessageId, Timestamp}
-import io.circe._
-import io.circe.generic.semiauto._
+import io.circe.Decoder
+import io.circe.generic.semiauto.deriveDecoder
+import io.circe.Encoder
+import io.circe.generic.semiauto.deriveEncoder
+
+import java.time.Instant
+import java.util.UUID
 
 sealed trait Message {
-  def id: EventId
-  def messageId: MessageId
-  def created: Timestamp
-  def body: MessageBody
-  def from: Boolean
+  def id: UUID
+  def eventId: UUID
+  def created: Instant
+  def body: String
+  def isFrom: Boolean
 }
 
 object Message {
-  final case class FromMessage(id: EventId, messageId: MessageId, body: MessageBody, created: Timestamp, from: Boolean) extends Message
-  final case class ToMessage(id: EventId, messageId: MessageId,  body: MessageBody, created: Timestamp, from: Boolean)  extends Message
+  final case class InstagramMessage(id: UUID, eventId: UUID, body: String, created: Instant, isFrom: Boolean) extends Message
 
-  implicit val eventEncoder: Encoder[Message] = deriveEncoder
-  implicit val eventDecoder: Decoder[Message] = deriveDecoder
+
+  implicit val messageToEncoder: Encoder[Message] = deriveEncoder
+  implicit val messageToDecoder: Decoder[Message] = deriveDecoder
+
+  implicit val messageFromEncoder: Encoder[Message] = deriveEncoder
+  implicit val messageFromDecoder: Decoder[Message] = deriveDecoder
 }

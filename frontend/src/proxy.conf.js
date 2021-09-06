@@ -1,6 +1,6 @@
 const PROXY_CONFIG = {
   "**": {
-    "target": "http://localhost:8083",
+    "target": "http://localhost:8080",
     "secure": false,
     "bypass": function (req) {
       if (req && req.headers && req.headers.accept && req.headers.accept.indexOf("html") !== -1) {

@@ -22,11 +22,12 @@ object Settings {
         "-Xcheckinit",
         "-Xfatal-warnings"
       ),
+      logLevel := Level.Debug,
       version := (version in ThisBuild).value,
       scalafmtOnCompile := true,
       testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework"),
       javaOptions += "-Dlogback.configurationFile=/src/resources/logback.xml",
-      mainClass in Compile := Some("com.example.cleverhouse.Main"),
+      mainClass in Compile := Some("com.example.instagram.Main"),
 
       addCompilerPlugin(contextApplied),
       addCompilerPlugin(kindProjector),
@@ -35,8 +36,8 @@ object Settings {
       dockerUpdateLatest := true
     )
 
-  val serviceDependencies = List(cats, catsEffect, neutronCore, slf4j, zioCats) ++ zioTest ++ List(doobieCore, doobieHikary, doobiePostgres, doobieQuill)
+  val serviceDependencies = List(cats, catsEffect, neutronCore, slf4j) ++ zioTest ++ List(doobieCore, doobieHikary, doobiePostgres, doobieQuill, flyway)
   val routeDependencies = http4s
-  val serverDependencies = List(neutronCirce, ciris, pureConfig, logback, log4cats) ++ zio
+  val serverDependencies = List(neutronCirce, ciris, pureConfig) ++ zio
   val domainDependencies = List(newtype) ++ circe
 }

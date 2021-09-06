@@ -20,12 +20,12 @@ lazy val server = project
   .settings(libraryDependencies ++= serverDependencies)
   .dependsOn(route)
 
-lazy val `shrinker-scala` = Project("shrinker-scala", file("."))
+lazy val `instagram-bot` = Project("instagram-bot", file("."))
   .enablePlugins(JavaAppPackaging)
   .settings(commonSettings)
-  .settings(organization := "com.example.cleverhouse")
-  .settings(moduleName := "cleverhouse")
-  .settings(name := "cleverhouse")
+  .settings(organization := "com.example.instagram")
+  .settings(moduleName := "instagram-bot")
+  .settings(name := "instagram-bot")
   .aggregate(
     domain,
     service,

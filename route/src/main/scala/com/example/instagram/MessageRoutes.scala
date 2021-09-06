@@ -3,7 +3,8 @@ package com.example.instagram
 import cats.Monad
 import cats.effect.Async
 import cats.implicits._
-import com.example.instagram.Message.{FromMessage, ToMessage}
+import com.example.instagram.Message.InstagramMessage
+import com.example.instagram.services.MessageService
 import io.circe.{Decoder, Encoder}
 import io.circe.generic.codec.DerivedAsObjectCodec.deriveCodec
 import org.http4s.circe.CirceEntityCodec.circeEntityEncoder
@@ -14,27 +15,31 @@ import org.http4s.{HttpRoutes, Request, Response}
 import java.time.Instant
 import java.util.UUID
 
-class MessageRoutes [F[_]: Monad : Async : JsonDecoder] extends Http4sDsl[F] {
+class MessageRoutes [F[_]: Monad : Async : JsonDecoder](messageService: MessageService[F]) extends Http4sDsl[F] {
 
   val routes: HttpRoutes[F] = HttpRoutes.of[F] {
     case req @ POST -> Root / "message" =>
-      val mess = (from: FromMessage)  => refactor(from)
+      val mess = (from: InstagramMessage)  => refactor(from)
       handleReq(req)(mess)
 
     case GET -> Root / "message" =>
-      Ok(ToMessage(EventId(UUID.randomUUID()), MessageId(UUID.randomUUID()), MessageBody("asdasd"), Timestamp(Instant.now()), false))
+      Ok(InstagramMessage(UUID.randomUUID(), UUID.randomUUID(), "asdasd", Instant.now(), false))
   }
 
-
-
-  def handleReq[T1: Decoder, T2: Encoder](req: Request[F])(mess: T1 => T2): F[Response[F]] =
+  def handleReq(req: Request[F])(mess: InstagramMessage => InstagramMessage): F[Response[F]] =
     for {
-      msg <- req.asJsonDecode[T1]
-        .map(mess)
-      res  <-  Ok(msg)
+      msg <- req.asJsonDecode[InstagramMessage]
+      answer    <- messageService.addMessage(msg)
+      res  <-  Ok(answer)
     } yield res
 
-  def refactor(msg: FromMessage) : ToMessage =
-    ToMessage(msg.id, msg.messageId, msg.body, Timestamp(Instant.now()), false)
+  def refactor(msg: InstagramMessage) : InstagramMessage =
+    InstagramMessage(msg.id, msg.eventId, msg.body, Instant.now(), true)
 
+}
+
+
+object MessageRoutes {
+  def apply[F[_]: Async](messageService: MessageService[F]): MessageRoutes[F] =
+    new MessageRoutes[F](messageService)
 }

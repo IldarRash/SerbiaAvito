@@ -1,29 +1,40 @@
 package com.example.instagram
 
-import cats.effect.{ContextShift, ExitCode, IO, IOApp, Timer}
-import com.example.instagram.config.AppConfig
-import org.http4s.HttpApp
-import pureconfig.ConfigSource
-import pureconfig.generic.auto._
 
-import scala.concurrent.ExecutionContext
+import cats.effect._
+import org.http4s.server.blaze.BlazeServerBuilder
+import zio.interop.catz.implicits._
+import zio.interop.catz.{taskConcurrentInstance, _}
+import zio.{Task, ZEnv, ZIO, _}
+import org.http4s.implicits._
+import zio._
+import zio.interop.catz._
+import zio.interop.catz.implicits._
 
-object Main extends IOApp {
-  type Init[T] = IO[T]
-  type Routes[F[_]] = HttpApp[F]
+object Main extends zio.App {
+  type F[A] = Task[A]
 
+  override def run(args: List[String]) = {
 
-  override def run(args: List[String]): IO[ExitCode] = {
-    implicit val contextShift: ContextShift[IO] = IO.contextShift(ExecutionContext.global)
-    implicit val timer: Timer[IO] = IO.timer(ExecutionContext.global)
+    val ec = platform.executor.asEC
+    Resources
+      .make[F]
+      .use { case Resources(config, xa) =>
 
-    startApp()
-      .as(ExitCode.Success)
-  }
+        val httpServer = Task.concurrentEffectWith { implicit CE =>
+          val routes = new Routes[F](xa)
+          BlazeServerBuilder[F](ec)
+            .bindHttp(config.apiPort, config.apiHost)
+            .withHttpApp(routes.make)
+            .serve
+            .compile
+            .drain
+        }
 
-
-  def startApp(): Init[Unit] = {
-    val appConfig = ConfigSource.default.loadOrThrow[AppConfig]
-    HttpServer.start[Init](appConfig, Routes.make[Init]())
+        Logger[F].info("Started server") *>
+          httpServer
+          .unit
+      }
+      .exitCode
   }
 }

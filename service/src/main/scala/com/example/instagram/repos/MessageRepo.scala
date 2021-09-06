@@ -1,15 +1,16 @@
 package com.example.instagram.repos
 
-import cats.effect.IO
-import com.example.instagram.{EventId, Message}
+import cats.data.OptionT
+import com.example.instagram
+import com.example.instagram.Message.InstagramMessage
+
+import java.util.UUID
 
 
-object MessageRepo {
-
-  trait Service[F[_]] {
-    def all: List[Message]
-    def byFrom(from: Boolean): F[List[Message]]
-    def byId(id: EventId): F[Option[Message]]
-  }
+trait MessageRepo[F[_]] {
+  def addMessage(message: InstagramMessage): F[UUID]
+  def all: F[List[InstagramMessage]]
+  def findIsFrom(isFrom: Boolean): F[List[InstagramMessage]]
+  /*def byId(id: UUID): OptionT[F, InstagramMessage]*/
 }
 
