@@ -1,30 +1,22 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
-import { AppService } from './app.service';
+import { AuthenticationService } from './_services';
+import { User } from './_models';
 
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
-})
+@Component({ selector: 'app', templateUrl: 'app.component.html' })
 export class AppComponent {
-  title: string | undefined;
-  postRequestResponse: Array<string> = [];
+    currentUser: User;
 
-  constructor(private appService: AppService) {
-    this.appService.getWelcomeMessage().subscribe((data: any) => {
-      console.log(data)
-      this.title = data.created;
-    });
-  }
+    constructor(
+        private router: Router,
+        private authenticationService: AuthenticationService
+    ) {
+        this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
+    }
 
-  /**
-   * This method is used to test the post request
-   */
-  public postData(): void {
-    this.appService.sendData().subscribe((data: any) => {
-      console.log(data)
-      this.postRequestResponse.push(JSON.stringify(data));
-    });
-  }
+    logout() {
+        this.authenticationService.logout();
+        this.router.navigate(['/login']);
+    }
 }

@@ -7,7 +7,7 @@ import doobie.implicits._
 import doobie.util.transactor.Transactor
 import doobie.postgres._
 import doobie.postgres.implicits._
-import java.util.UUID
+
 
 
 class MessageRepoInterpreter [F[_]: Async](xa: Transactor[F]) extends MessageRepo[F] with Mapping {
@@ -67,16 +67,10 @@ object MessageRepoInterpreter {
        """.stripMargin
       .query[InstagramMessage]
 
-
   def findIsFrom(isFrom: Boolean): doobie.Query0[InstagramMessage] =
     sql"""
          |SELECT * FROM message m
          |WHERE m.isFrom = ${isFrom}
        """.stripMargin
       .query[InstagramMessage]
-
-
-
-
-
 }

@@ -1,20 +1,16 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{title}}!
-  </h1>
-  <router-outlet></router-outlet>
-  <div>
-    <h2>Check out the project on GitHub for more information</h2>
-  </div>
+﻿<!-- nav -->
+<nav class="navbar navbar-expand navbar-dark bg-dark" *ngIf="currentUser">
+    <div class="navbar-nav">
+        <a class="nav-item nav-link" routerLink="/">Home</a>
+        <a class="nav-item nav-link" (click)="logout()">Logout</a>
+    </div>
+</nav>
 
-  <div class="post-request-test">
-    <h3>Test Post Request</h3>
-    <button (click)="postData()">ClickMe :)</button>
-    <ul>
-      <li *ngFor="let item of postRequestResponse">
-        <h5>{{item}}</h5>
-      </li>
-    </ul>
-  </div>
+<!-- main app container -->
+<div class="container">
+    <router-outlet></router-outlet>
+</div>
+
+<!-- credits -->
+<div class="text-center mt-4">
 </div>

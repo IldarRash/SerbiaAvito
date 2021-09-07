@@ -1,60 +1,31 @@
+﻿import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { HTTP_INTERCEPTORS, HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { RouteExampleComponent } from './route-example/route-example.component';
+import { appRoutingModule } from './app.routing';
 
-import { AppService } from './app.service';
-import { AppHttpInterceptorService } from './http-interceptor.service';
-
-const routes: Routes = [
-  {
-    path: 'scala',
-    component: RouteExampleComponent,
-    data: { technology: 'Scala' }
-  },
-  {
-    path: 'play',
-    component: RouteExampleComponent,
-    data: { technology: 'Play' }
-  },
-  {
-    path: 'angular',
-    component: RouteExampleComponent,
-    data: { technology: 'Angular' }
-  },
-  {
-    path: '**',
-    redirectTo: '/play',
-    pathMatch: 'full'
-  }
-];
+import { BasicAuthInterceptor, ErrorInterceptor } from './_helpers';
+import { HomeComponent } from './home';
+import { LoginComponent } from './login';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    RouteExampleComponent
-  ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    HttpClientXsrfModule.withOptions({
-      cookieName: 'Csrf-Token',
-      headerName: 'Csrf-Token',
-    }),
-    RouterModule.forRoot(routes)
-  ],
-  providers: [
-    AppService,
-    {
-      multi: true,
-      provide: HTTP_INTERCEPTORS,
-      useClass: AppHttpInterceptorService
-    }
-  ],
-  bootstrap: [AppComponent]
+    imports: [
+        BrowserModule,
+        ReactiveFormsModule,
+        HttpClientModule,
+        appRoutingModule
+    ],
+    declarations: [
+        AppComponent,
+        HomeComponent,
+        LoginComponent
+    ],
+    providers: [
+        { provide: HTTP_INTERCEPTORS, useClass: BasicAuthInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    ],
+    bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule { }

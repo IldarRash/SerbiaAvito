@@ -29,8 +29,8 @@ object Dependencies {
 
   val slf4j = "org.slf4j" % "slf4j-simple" % Version.slf4j
 
-  val neutronCore = "com.chatroulette" %% "neutron-core" % Version.neutron
-  val neutronCirce = "com.chatroulette" %% "neutron-circe" % Version.neutron
+  val jwt = "dev.profunktor" %% "http4s-jwt-auth" % Version.jwtVersion
+  val bcrypt = "org.mindrot" % "jbcrypt" % Version.bcrypt
 
   val doobieCore = "org.tpolecat" %% "doobie-core" % Version.doobie
   val doobiePostgres = "org.tpolecat" %% "doobie-postgres" % Version.doobie
@@ -48,17 +48,19 @@ object Dependencies {
 object Version {
   val zio = "1.0.11"
   val cats = "2.6.1"
-  val catsEffect = "2.5.3"
-  val zioCats = "2.5.1.0"
-  val fs2Core = "2.4.2"
+  val catsEffect = "3.1.1"
+  val zioCats = "3.1.1.0"
+  val jwtVersion = "1.0.0"
+  val bcrypt = "0.4"
+  val fs2Core = "3.0.6"
   val slf4j = "1.7.32"
-  val http4s = "1.0-234-d1a2b53"
+  val http4s = "0.23.3"
   val kindProjector = "0.13.2"
-  val ciris = "1.2.1"
+  val ciris = "2.1.1"
   val circe = "0.14.1"
   val newtype = "0.4.4"
   val neutron = "0.0.4"
-  val doobie = "0.13.4"
+  val doobie = "1.0.0-RC1"
   val postgres = "42.1.4"
   val contextApplied = "0.1.4"
   val pureConfigVersion = "0.12.3"

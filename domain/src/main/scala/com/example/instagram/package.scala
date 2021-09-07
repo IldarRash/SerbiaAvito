@@ -26,6 +26,11 @@ package object instagram {
     def apply(uuid: UUID): MessageId = MessageId(uuid.toString)
   }
 
+  sealed trait DbError
+  object DbError {
+    case class UserNameDbError(userName: String) extends DbError
+  }
+
   implicit def coercibleEq[A: Coercible[B, *], B: Eq]: Eq[A] =
     Eq[B].contramap[A](_.asInstanceOf[B])
 
