@@ -21,11 +21,11 @@ object Main extends zio.App {
     val ec = platform.executor.asEC
     Resources
       .make[F]
-      .use { case Resources(serverConfig, databaseConfig, xa) =>
+      .use { case Resources(serverConfig, databaseConfig, jwtConfig, xa) =>
         val flyway = Database.initializeDb[F](databaseConfig)
 
         val httpServer = Task.concurrentEffectWith { implicit CE =>
-          val routes = new Routes[F](xa)
+          val routes = new Routes[F](xa, jwtConfig)
           BlazeServerBuilder[F](ec)
             .bindHttp(serverConfig.apiPort, serverConfig.apiHost)
             .withHttpApp(routes.make)

@@ -8,13 +8,11 @@ import com.example.instagram.services.MessageService
 import io.circe.generic.codec.DerivedAsObjectCodec.deriveCodec
 import io.circe.syntax.EncoderOps
 import org.http4s.circe.CirceEntityCodec.circeEntityEncoder
-import org.http4s.circe.{JsonDecoder, toMessageSyntax}
+import org.http4s.circe.{JsonDecoder, toMessageSynax}
 import org.http4s.dsl.Http4sDsl
-import io.circe.syntax._
 import org.http4s.{HttpRoutes, Request, Response}
 
 import java.time.Instant
-import java.util.UUID
 
 class MessageRoutes [F[_]: Monad : Async : JsonDecoder](messageService: MessageService[F]) extends Http4sDsl[F] {
 

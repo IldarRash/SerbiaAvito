@@ -27,7 +27,7 @@ case class UserResponse(
                          lastName: Option[String]
                        )
 
-case class UserCredential(userName: String, password: String)
+case class UserCredential(username: String, password: String)
 
 case class InvalidUserOrPassword(userName: String) extends NoStackTrace
 
