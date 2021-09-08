@@ -1,6 +1,7 @@
 package com.example.instagram.repos.impl
 
 import cats.effect.Async
+import com.example.instagram.Message.InstagramMessage
 import com.example.instagram.{User, UserRequest}
 import com.example.instagram.repos.{Mapping, UserRepo}
 import doobie.implicits.toSqlInterpolator
@@ -34,6 +35,13 @@ class UserRepoInterpreter [F[_]: Async](xa: Transactor[F]) extends UserRepo[F] w
     UserRepoInterpreter.getUserByUserName(username)
       .option
       .transact(xa)
+
+  override def all: fs2.Stream[F, User] =
+    UserRepoInterpreter
+      .all
+      .stream
+      .transact(xa)
+
 }
 
 object UserRepoInterpreter {
@@ -90,5 +98,10 @@ object UserRepoInterpreter {
          |SELECT * FROM app_user usr
          |WHERE usr.first_name = ${username}
        """.stripMargin
+      .query[User]
+
+  def all: doobie.Query0[User] =
+    sql"""SELECT * FROM app_user"""
+      .stripMargin
       .query[User]
 }

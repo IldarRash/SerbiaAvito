@@ -22,6 +22,11 @@ class UserService [F[_] : Monad : Async : Logger](userRepo: UserRepo[F]) {
     }
   }
 
+  def getAllUsers(user: User): fs2.Stream[F, User] = {
+    println(user)
+    userRepo.all
+  }
+
   def updateUser(user: User): F[Int] =
     userRepo.updateUser(user)
 

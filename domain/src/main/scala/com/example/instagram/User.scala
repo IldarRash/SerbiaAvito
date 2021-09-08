@@ -16,6 +16,7 @@ case class User(
                )
 
 case class UserRequest(
+                        userId: Long,
                         firstName: String,
                         lastName: String,
                         password: String,
@@ -24,7 +25,8 @@ case class UserRequest(
 case class UserResponse(
                          userId: Long,
                          firstName: String,
-                         lastName: Option[String]
+                         lastName: Option[String],
+                         token: String
                        )
 
 case class UserCredential(username: String, password: String)
@@ -42,11 +44,13 @@ object Role {
 }
 
 object UserResponse {
+  def apply(user: User, token: String): UserResponse = new UserResponse(user.userId, user.firstName, Some(user.lastName), token)
 
+  implicit val encoder: Encoder[UserResponse] = deriveEncoder
 }
 
 object UserRequest {
-
+  implicit val decoder: Decoder[UserRequest] = deriveDecoder
 }
 
 object UserCredential {
@@ -55,6 +59,7 @@ object UserCredential {
 }
 
 object User {
+  def toUserResponse(user: User) : UserResponse = new UserResponse(user.userId, user.firstName, Some(user.lastName), "")
   implicit val encoder: Encoder[User] = deriveEncoder
   implicit val decoder: Decoder[User] = deriveDecoder
 }

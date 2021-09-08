@@ -27,7 +27,7 @@ class LoginRoutes[F[_]: Async : Logger](
       }
   }
 
-    def handleReq(req: Request[F])(mess: UserCredential => F[String]): F[String] =
+    def handleReq(req: Request[F])(mess: UserCredential => F[UserResponse]): F[UserResponse] =
       for {
         msg <- req.asJsonDecode[UserCredential]
         jwt    <- mess(msg)

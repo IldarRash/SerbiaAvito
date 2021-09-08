@@ -7,6 +7,8 @@ trait UserRepo[F[_]] {
 
   def updateUser(user: User): F[Int]
 
+  def all: fs2.Stream[F, User]
+
   def getUserById(userId: Long): F[Option[User]]
 
   def deleteUserById(userId: Long): F[Int]
