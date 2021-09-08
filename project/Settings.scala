@@ -36,7 +36,7 @@ object Settings {
       dockerUpdateLatest := true
     )
 
-  val serviceDependencies = List(cats, catsEffect, slf4j, jwt, bcrypt) ++ zioTest ++ List(doobieCore, doobieHikary, doobiePostgres, flyway)
+  val serviceDependencies = List(cats, catsEffect, slf4j, jwt, rsa, bcrypt) ++ zioTest ++ List(doobieCore, doobieHikary, doobiePostgres, flyway)
   val routeDependencies = http4s
   val serverDependencies = List(ciris, pureConfig) ++ zio
   val domainDependencies = List(newtype) ++ circe

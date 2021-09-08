@@ -11,6 +11,8 @@ import zio._
 import zio.interop.catz._
 import zio.interop.catz.implicits._
 
+import scala.concurrent.ExecutionContextExecutor
+
 object Main extends zio.App {
   type F[A] = Task[A]
 

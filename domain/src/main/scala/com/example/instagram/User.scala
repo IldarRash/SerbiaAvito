@@ -42,13 +42,11 @@ object Role {
 }
 
 object UserResponse {
-  implicit def userRequestEnc[F[_]: Sync]: EntityEncoder[F, UserResponse] = jsonEncoderOf
-  implicit def userRequestDec[F[_]: Sync]: EntityDecoder[F, UserResponse] = jsonOf
+
 }
 
 object UserRequest {
-  implicit def userRequestEnc[F[_]: Sync]: EntityEncoder[F, UserRequest] = jsonEncoderOf
-  implicit def userRequestDec[F[_]: Sync]: EntityDecoder[F, UserRequest] = jsonOf
+
 }
 
 object UserCredential {

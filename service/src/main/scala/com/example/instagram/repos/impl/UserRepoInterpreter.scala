@@ -47,7 +47,7 @@ object UserRepoInterpreter {
          |INSERT INTO app_user (
          |  first_name,
          |  last_name,
-         |  password
+         |  pass
          |)
          |VALUES (
          |  ${userRequest.firstName},
@@ -62,7 +62,7 @@ object UserRepoInterpreter {
          |UPDATE app_user (
          |  first_name,
          |  last_name,
-         |  password
+         |  pass
          |)
          |VALUES (
          |  ${user.firstName},
