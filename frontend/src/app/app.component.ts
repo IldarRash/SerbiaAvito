@@ -1,22 +1,15 @@
-﻿import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from "@angular/core";
 
-import { AuthenticationService } from './_services';
-import { User } from './_models';
+import { UserService } from "./core";
 
-@Component({ selector: 'app', templateUrl: 'app.component.html' })
-export class AppComponent {
-    currentUser: User;
+@Component({
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+})
+export class AppComponent implements OnInit {
+  constructor(private userService: UserService) {}
 
-    constructor(
-        private router: Router,
-        private authenticationService: AuthenticationService
-    ) {
-        this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
-    }
-
-    logout() {
-        this.authenticationService.logout();
-        this.router.navigate(['/login']);
-    }
+  ngOnInit() {
+    this.userService.populate();
+  }
 }

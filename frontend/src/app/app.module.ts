@@ -1,31 +1,28 @@
-﻿import { NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { appRoutingModule } from './app.routing';
-
-import { BasicAuthInterceptor, ErrorInterceptor } from './_helpers';
-import { HomeComponent } from './home';
-import { LoginComponent } from './login';
+import { AuthModule } from './auth/auth.module';
+import { HomeModule } from './home/home.module';
+import {
+  FooterComponent,
+  HeaderComponent,
+  SharedModule
+} from './shared';
+import { AppRoutingModule } from './app-routing.module';
+import { CoreModule } from './core/core.module';
 
 @NgModule({
-    imports: [
-        BrowserModule,
-        ReactiveFormsModule,
-        HttpClientModule,
-        appRoutingModule
-    ],
-    declarations: [
-        AppComponent,
-        HomeComponent,
-        LoginComponent
-    ],
-    providers: [
-        { provide: HTTP_INTERCEPTORS, useClass: BasicAuthInterceptor, multi: true },
-        { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    ],
-    bootstrap: [AppComponent]
+  declarations: [AppComponent, FooterComponent, HeaderComponent],
+  imports: [
+    BrowserModule,
+    CoreModule,
+    SharedModule,
+    HomeModule,
+    AuthModule,
+    AppRoutingModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

@@ -1,8 +1,9 @@
 
 create table  if not exists app_user (
                                          app_user_id bigserial primary key,
-                                         first_name varchar,
-                                         last_name varchar
+                                         username varchar,
+                                         email varchar,
+                                         pass varchar
 );
 
 create table if not exists token (

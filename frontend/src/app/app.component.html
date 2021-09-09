@@ -1,16 +1,5 @@
-﻿<!-- nav -->
-<nav class="navbar navbar-expand navbar-dark bg-dark" *ngIf="currentUser">
-    <div class="navbar-nav">
-        <a class="nav-item nav-link" routerLink="/">Home</a>
-        <a class="nav-item nav-link" (click)="logout()">Logout</a>
-    </div>
-</nav>
+<app-layout-header></app-layout-header>
 
-<!-- main app container -->
-<div class="container">
-    <router-outlet></router-outlet>
-</div>
+<router-outlet></router-outlet>
 
-<!-- credits -->
-<div class="text-center mt-4">
-</div>
+<app-layout-footer></app-layout-footer>

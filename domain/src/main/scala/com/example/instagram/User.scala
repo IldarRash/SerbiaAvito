@@ -10,22 +10,21 @@ sealed case class Role(roleRepr: String)
 
 case class User(
                  userId: Long,
-                 firstName: String,
-                 lastName: String,
+                 username: String,
+                 email: String,
                  password: String,
                )
 
 case class UserRequest(
-                        userId: Long,
-                        firstName: String,
-                        lastName: String,
+                        username: String,
+                        email: String,
                         password: String,
                       )
 
 case class UserResponse(
                          userId: Long,
-                         firstName: String,
-                         lastName: Option[String],
+                         username: String,
+                         email: String,
                          token: String
                        )
 
@@ -44,7 +43,7 @@ object Role {
 }
 
 object UserResponse {
-  def apply(user: User, token: String): UserResponse = new UserResponse(user.userId, user.firstName, Some(user.lastName), token)
+  def apply(user: User, token: String): UserResponse = new UserResponse(user.userId, user.username, user.email, token)
 
   implicit val encoder: Encoder[UserResponse] = deriveEncoder
 }
@@ -59,7 +58,7 @@ object UserCredential {
 }
 
 object User {
-  def toUserResponse(user: User) : UserResponse = new UserResponse(user.userId, user.firstName, Some(user.lastName), "")
+  def toUserResponse(user: User) : UserResponse = new UserResponse(user.userId, user.username, user.email, "")
   implicit val encoder: Encoder[User] = deriveEncoder
   implicit val decoder: Decoder[User] = deriveDecoder
 }

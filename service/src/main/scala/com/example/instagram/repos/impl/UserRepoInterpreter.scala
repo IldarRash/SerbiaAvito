@@ -53,13 +53,13 @@ object UserRepoInterpreter {
   def addUser(userRequest: UserRequest): doobie.Update0 =
     sql"""
          |INSERT INTO app_user (
-         |  first_name,
-         |  last_name,
+         |  username,
+         |  email,
          |  pass
          |)
          |VALUES (
-         |  ${userRequest.firstName},
-         |  ${userRequest.lastName},
+         |  ${userRequest.username},
+         |  ${userRequest.email},
          |  ${userRequest.password}
          |)
      """.stripMargin
@@ -68,13 +68,13 @@ object UserRepoInterpreter {
   def updateUser(user: User): doobie.Update0 =
     sql"""
          |UPDATE app_user (
-         |  first_name,
-         |  last_name,
+         |  username,
+         |  email,
          |  pass
          |)
          |VALUES (
-         |  ${user.firstName},
-         |  ${user.lastName},
+         |  ${user.username},
+         |  ${user.email},
          |  ${user.password}
          |)
        """.stripMargin
@@ -96,7 +96,7 @@ object UserRepoInterpreter {
   def getUserByUserName(username: String) : doobie.Query0[User] =
     sql"""
          |SELECT * FROM app_user usr
-         |WHERE usr.first_name = ${username}
+         |WHERE usr.username = ${username}
        """.stripMargin
       .query[User]
 
