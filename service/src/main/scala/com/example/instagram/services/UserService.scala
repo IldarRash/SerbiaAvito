@@ -2,15 +2,17 @@ package com.example.instagram.services
 
 import cats.Monad
 import cats.effect.Async
-import com.example.instagram.{DbError, Logger, User, UserRequest}
+import com.example.instagram.{DbError, Logger, User, UserRequest, UserResponse}
 import cats.implicits._
+import com.example.instagram.config.JwtConfig
 import com.example.instagram.repos.UserRepo
 
 import java.util.UUID
 
-class UserService [F[_] : Monad : Async : Logger](userRepo: UserRepo[F]) {
-  def addUser(userRequest: UserRequest): F[Int] =
+class UserService [F[_] : Monad : Async : Logger](userRepo: UserRepo[F], jwtConfig: JwtConfig) extends AuthHelper(jwtConfig) {
+  def addUser(userRequest: UserRequest): F[UserResponse] =
      userRepo.addUser(userRequest)
+       .map(encode)
 
 
   def validated(req: Int, username: String): Either[DbError, String] = {
@@ -27,7 +29,7 @@ class UserService [F[_] : Monad : Async : Logger](userRepo: UserRepo[F]) {
     userRepo.all
   }
 
-  def updateUser(user: User): F[Int] =
+  def updateUser(user: User): F[User] =
     userRepo.updateUser(user)
 
   def getUserById(userId: Long): F[Option[User]] =
@@ -36,10 +38,10 @@ class UserService [F[_] : Monad : Async : Logger](userRepo: UserRepo[F]) {
   def deleteUserById(userId: Long): F[Int]=
     userRepo.deleteUserById(userId)
 
-  def getUserByUserName(username: String): F[Option[User]]=
-    userRepo.getUserByUserName(username)
+  def getUserByEmail(email: String): F[Option[User]]=
+    userRepo.getUserByEmail(email)
 }
 object UserService {
-  def apply[F[_]: Async : Logger](userRepo: UserRepo[F]): UserService[F] =
-    new UserService[F](userRepo)
+  def apply[F[_]: Async : Logger](userRepo: UserRepo[F], jwtConfig: JwtConfig): UserService[F] =
+    new UserService[F](userRepo, jwtConfig)
 }

@@ -51,7 +51,7 @@ class Routes[F[_]: Async: ConcurrentEffect: Timer: ContextShift](val xa: Transac
     val messageService = MessageService(messageInterpreter)
 
     val userInterpreter: UserRepoInterpreter[F] = UserRepoInterpreter(xa)
-    val userService = UserService(userInterpreter)
+    val userService = UserService(userInterpreter, jwtConfig)
     val authService = new AuthService(userService, jwtConfig)
 
     val userRoute: HttpRoutes[F]  = UserRoutes[F](userService).routes(authMiddleware)

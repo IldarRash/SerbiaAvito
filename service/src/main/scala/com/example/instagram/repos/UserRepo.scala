@@ -3,9 +3,9 @@ package com.example.instagram.repos
 import com.example.instagram.{User, UserRequest}
 
 trait UserRepo[F[_]] {
-  def addUser(userRequest: UserRequest): F[Int]
+  def addUser(userRequest: UserRequest): F[User]
 
-  def updateUser(user: User): F[Int]
+  def updateUser(user: User): F[User]
 
   def all: fs2.Stream[F, User]
 
@@ -13,6 +13,6 @@ trait UserRepo[F[_]] {
 
   def deleteUserById(userId: Long): F[Int]
 
-  def getUserByUserName(username: String): F[Option[User]]
+  def getUserByEmail(email: String): F[Option[User]]
 
 }

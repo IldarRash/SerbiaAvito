@@ -13,6 +13,8 @@ case class User(
                  username: String,
                  email: String,
                  password: String,
+                 bio: Option[String],
+                 image: Option[String],
                )
 
 case class UserRequest(
@@ -22,13 +24,14 @@ case class UserRequest(
                       )
 
 case class UserResponse(
-                         userId: Long,
                          username: String,
                          email: String,
+                         bio: Option[String],
+                         image: Option[String],
                          token: String
                        )
 
-case class UserCredential(username: String, password: String)
+case class UserCredential(email: String, password: String)
 
 case class InvalidUserOrPassword(userName: String) extends NoStackTrace
 
@@ -43,7 +46,7 @@ object Role {
 }
 
 object UserResponse {
-  def apply(user: User, token: String): UserResponse = new UserResponse(user.userId, user.username, user.email, token)
+  def apply(user: User, token: String): UserResponse = new UserResponse(user.username, user.email, user.bio, user.image, token)
 
   implicit val encoder: Encoder[UserResponse] = deriveEncoder
 }
@@ -58,7 +61,7 @@ object UserCredential {
 }
 
 object User {
-  def toUserResponse(user: User) : UserResponse = new UserResponse(user.userId, user.username, user.email, "")
+  def toUserResponse(user: User) : UserResponse =  UserResponse(user.username, user.email, user.bio, user.image, "token")
   implicit val encoder: Encoder[User] = deriveEncoder
   implicit val decoder: Decoder[User] = deriveDecoder
 }

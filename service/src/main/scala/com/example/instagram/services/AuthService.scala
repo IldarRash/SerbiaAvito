@@ -9,17 +9,15 @@ import com.example.instagram.{Crypto, InvalidUserOrPassword, Logger, User, UserR
 import io.circe.syntax.EncoderOps
 import pdi.jwt.{Jwt, JwtAlgorithm}
 
-class AuthService[F[_]: Monad : Async: Logger](userService: UserService[F], jwtConfig: JwtConfig) {
+class AuthService[F[_]: Monad : Async: Logger](userService: UserService[F], jwtConfig: JwtConfig) extends AuthHelper(jwtConfig) {
 
-  def login(username: String, password: String): F[UserResponse] =
+  def login(email: String, password: String): F[UserResponse] =
     for {
       user <- userService
-        .getUserByUserName(username)
+        .getUserByEmail(email)
       checkedUser <- user.filter(user => Crypto.checkPassword(password, user.password)).pure[F]
-      token       <- checkedUser.fold(InvalidUserOrPassword(username).raiseError[F, UserResponse])(u => encode(u).pure[F])
+      token       <- checkedUser.fold(InvalidUserOrPassword(email).raiseError[F, UserResponse])(u => encode(u).pure[F])
     } yield token
-
-  def encode(user: User): UserResponse = UserResponse(user, Jwt.encode(user.asJson.toString(), jwtConfig.hmacSecret, JwtAlgorithm.HS256))
 
   //TODO: Implement session/timeout for jwt-token
   def logout(token: String, username: String): F[Unit] = ???

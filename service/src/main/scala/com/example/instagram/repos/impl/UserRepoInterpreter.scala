@@ -1,24 +1,19 @@
 package com.example.instagram.repos.impl
 
+import cats.Comonad
 import cats.effect.Async
-import com.example.instagram.Message.InstagramMessage
-import com.example.instagram.{User, UserRequest}
 import com.example.instagram.repos.{Mapping, UserRepo}
-import doobie.implicits.toSqlInterpolator
-import doobie.util.transactor.Transactor
+import com.example.instagram.{User, UserRequest}
 import doobie.implicits._
-import doobie.postgres._
-import doobie.postgres.implicits._
+import doobie.util.transactor.Transactor
 
 class UserRepoInterpreter [F[_]: Async](xa: Transactor[F]) extends UserRepo[F] with Mapping{
-  override def addUser(userRequest: UserRequest): F[Int] =
+  override def addUser(userRequest: UserRequest): F[User] =
     UserRepoInterpreter.addUser(userRequest)
-      .run
       .transact(xa)
 
-  override def updateUser(user: User): F[Int] =
+  override def updateUser(user: User): F[User] =
     UserRepoInterpreter.updateUser(user)
-      .run
       .transact(xa)
 
   override def getUserById(userId: Long): F[Option[User]] =
@@ -31,8 +26,8 @@ class UserRepoInterpreter [F[_]: Async](xa: Transactor[F]) extends UserRepo[F] w
       .run
       .transact(xa)
 
-  override def getUserByUserName(username: String): F[Option[User]] =
-    UserRepoInterpreter.getUserByUserName(username)
+  override def getUserByEmail(email: String): F[Option[User]] =
+    UserRepoInterpreter.getUserByEmail(email)
       .option
       .transact(xa)
 
@@ -50,7 +45,7 @@ object UserRepoInterpreter {
     new UserRepoInterpreter[F](xa)
 
 
-  def addUser(userRequest: UserRequest): doobie.Update0 =
+  def addUser(userRequest: UserRequest): doobie.ConnectionIO[User] =
     sql"""
          |INSERT INTO app_user (
          |  username,
@@ -64,21 +59,40 @@ object UserRepoInterpreter {
          |)
      """.stripMargin
       .update
+      .withUniqueGeneratedKeys[User](
+        "app_user_id",
+        "username",
+        "email",
+        "pass",
+        "bio",
+        "image"
+      )
 
-  def updateUser(user: User): doobie.Update0 =
+  def updateUser(user: User): doobie.ConnectionIO[User] =
     sql"""
          |UPDATE app_user (
          |  username,
          |  email,
-         |  pass
+         |  pass,
+         |  bio,
+         |  image
          |)
          |VALUES (
          |  ${user.username},
          |  ${user.email},
-         |  ${user.password}
+         |  ${user.password},
+         |  ${user.bio},
+         |  ${user.image}
          |)
        """.stripMargin
       .update
+      .withUniqueGeneratedKeys[User](
+        "id",
+        "username",
+        "email",
+        "pass",
+        "bio",
+        "image")
 
   def getUserById(userId: Long): doobie.Query0[User] =
     sql"""
@@ -93,10 +107,10 @@ object UserRepoInterpreter {
        """.stripMargin
       .update
 
-  def getUserByUserName(username: String) : doobie.Query0[User] =
+  def getUserByEmail(email: String) : doobie.Query0[User] =
     sql"""
          |SELECT * FROM app_user usr
-         |WHERE usr.username = ${username}
+         |WHERE usr.email = ${email}
        """.stripMargin
       .query[User]
 

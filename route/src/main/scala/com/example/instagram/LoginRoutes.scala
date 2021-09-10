@@ -20,7 +20,7 @@ class LoginRoutes[F[_]: Async : Logger](
 
     case req @ POST -> Root / "login" =>
 
-      handleReq(req)(user => authService.login(user.username, user.password))
+      handleReq(req)(user => authService.login(user.email, user.password))
         .flatMap(Ok(_))
         .handleErrorWith {
       case InvalidUserOrPassword(_) => Forbidden()

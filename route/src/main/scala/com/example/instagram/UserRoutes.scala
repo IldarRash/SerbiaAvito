@@ -21,9 +21,9 @@ class UserRoutes[F[_]: Sync: Logger](
       (for {
         userRequest <- req.decodeJson[UserRequest]
         hash        = Crypto.encrypt(userRequest.password)
-        userRes <- userService
+        user <- userService
           .addUser(userRequest.copy(password = hash))
-        result <- Ok(userRes)
+        result <- Ok(user.asJson)
       } yield result).recoverWith {
         case UsernameAlreadyExist(username) => Conflict(s"Username already exist: $username")
       }
