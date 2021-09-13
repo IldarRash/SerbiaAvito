@@ -20,9 +20,7 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     this.route.data.pipe(
-      concatMap((data: { profile: Profile }) => {
-        this.profile = data.profile;
-        // Load the current user's data.
+      concatMap((user: User) => {
         return this.userService.currentUser.pipe(tap(
           (userData: User) => {
             this.currentUser = userData;
